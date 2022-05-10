@@ -33,8 +33,23 @@ rustup target add x86_64-fortanix-unknown-sgx --toolchain nightly
 cargo install fortanix-sgx-tools sgxs-tools
 # The rest is the same
 ```
-
 For more on this, check the [full issue](https://github.com/fortanix/rust-sgx/issues/374).
+
+There's another thing to install, which is the AESM service. There are only libraries for Ubuntu 16, Ubuntu 18 and Ubuntu 20, so beware if you have a more recent version, you probably won't be able to install this service. You can check your version using:
+
+```bash
+# in case you don't have lsb-release installed
+# sudo apt update && sudo apt install lsb-release
+lsb_release -cs 
+```
+
+Supported versions are `xenial`, `focal` and `bionic`. In case you have one of those, try running:
+```bash
+echo "deb https://download.01.org/intel-sgx/sgx_repo/ubuntu $(lsb_release -cs) main" | sudo tee -a /etc/apt/sources.list.d/intel-sgx.list >/dev/null
+curl -sSL "https://download.01.org/intel-sgx/sgx_repo/ubuntu/intel-sgx-deb.key" | sudo -E apt-key add -
+sudo apt-get update
+sudo apt-get install sgx-aesm-service libsgx-aesm-launch-plugin
+```
 
 Now that you're already set up, try running:
 ```bash
