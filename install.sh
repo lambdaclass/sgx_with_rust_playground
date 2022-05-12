@@ -14,7 +14,7 @@ sudo apt install gcc pkg-config libssl-dev protobuf-compiler
 #     sgx-libs    #
 ###################
 
-# intel-sgx-dkms install
+# Install fortanix sgx-dkms lib
 echo "deb https://download.fortanix.com/linux/apt xenial main" | sudo tee -a /etc/apt/sources.list.d/fortanix.list >/dev/null
 curl -sSL "https://download.fortanix.com/linux/apt/fortanix.gpg" | sudo -E apt-key add -
 sudo apt-get update
