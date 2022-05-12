@@ -17,6 +17,22 @@ curl -sSL "https://download.fortanix.com/linux/apt/fortanix.gpg" | sudo -E apt-k
 sudo apt-get update
 sudo apt-get install intel-sgx-dkms
 
+# need xenial, focal or bionic for this to work (more info below)
+# Install AESM libs
+echo "deb https://download.01.org/intel-sgx/sgx_repo/ubuntu $(lsb_release -cs) main" | sudo tee -a /etc/apt/sources.list.d/intel-sgx.list >/dev/null
+curl -sSL "https://download.01.org/intel-sgx/sgx_repo/ubuntu/intel-sgx-deb.key" | sudo -E apt-key add -
+sudo apt-get update
+sudo apt-get install sgx-aesm-service libsgx-aesm-launch-plugin
+
+# Install rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# Update PATH ENV
+source ~/.profile
+
+# Use nightly
+rustup install toolchain nightly
+
 # Install EDP components
 rustup target add x86_64-fortanix-unknown-sgx --toolchain nightly
 cargo install fortanix-sgx-tools sgxs-tools --git https://github.com/fortanix/rust-sgx
@@ -67,5 +83,4 @@ If you weren't able to install the attestation packages, then you'll see that th
 cargo run +nightly --target x86_64-fortanix-unknown-sgx
 ```
 
-- The `+nightly` option shouldn't be necessary if the default toolchain is already nightly.
-- The `--target x86_64-fortanix-unknown-sgx` option shouldn't be necessary because of the lines in `.cargo/config`, but are here in case emphasize that it's not necessary to make the `.cargo` directory
+The `+nightly` option shouldn't be necessary if the default toolchain is already nightly.
