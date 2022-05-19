@@ -33,7 +33,8 @@ fn compatible_deps(dep_tree: &json::JsonValue) -> Result<Vec<String>, json::Erro
                 let deps = &dep_tree["dependencies"];
                 if let json::JsonValue::Array(v) = deps {
                     Ok(
-                        v.iter().flat_map(|dep| compatible_deps(dep).unwrap()).collect()
+                        //v.iter().flat_map(|dep| compatible_deps(dep).unwrap()).collect()
+                        vec![]
                     )
                 } else {
                     Err(json::Error::WrongType("AHHHHHHH!".to_string()))
