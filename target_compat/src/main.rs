@@ -7,8 +7,8 @@ fn is_sgx_compatible(crate_identifier: &str) -> bool {
                          .arg("check")
                          .arg("--package")
                          .arg(crate_identifier)
-//                         .arg("--target")
-//                         .arg("x86_64-fortanix-unknown-sgx")
+                         .arg("--target")
+                         .arg("x86_64-fortanix-unknown-sgx")
                          .status()
                          .expect("failed to execute process");
    output.success() 
