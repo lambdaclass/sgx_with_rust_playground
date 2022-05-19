@@ -49,12 +49,25 @@ fn compatible_deps(dep_tree: &json::JsonValue) -> Result<Vec<String>, json::Erro
 
 fn main() -> Result<(), Box<dyn Error>> {
     let metadata = json::parse(&std::fs::read_to_string("metadata.json")?)?;
-    
+
     let dep_tree = &metadata["packages"];
     if let json::JsonValue::Array(v) = dep_tree {
-        for dep in v.iter() {
-            println!("compatible dependencies: {:?}", compatible_deps(dep));
-        }
+
+        let all_deps : std::collections::HashSet<String> = std::collections::HashSet::from_iter(v.iter().map(|dep| {
+            if let json::JsonValue::Object(o) = dep {
+                let crate_name = &o["name"];
+                let crate_version = &o["version"];
+                format!("{}:{}", crate_name, crate_version).to_string()
+            } else {
+                "".to_string()
+            }
+        }));
+        let compatible : std::collections::HashSet<String> = std::collections::HashSet::from_iter(v.iter().flat_map(|dep| compatible_deps(dep).unwrap()));
+        let incompatible : std::collections::HashSet<String> = all_deps.difference(&compatible).cloned().collect();
+        println!("compatible: {:?}", compatible);
+        println!("================");
+        println!("================");
+        println!("incompatible: {:?}", incompatible);
     }
 
     Ok(())
